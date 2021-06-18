@@ -26,6 +26,7 @@ const config: Configuration = {
       '@typings': path.resolve(__dirname, 'typings'),
       '@classes': path.resolve(__dirname, 'classes'),
       '@audios': path.resolve(__dirname, 'audios'),
+      '@contexts': path.resolve(__dirname, 'contexts'),
     },
   },
   entry: {

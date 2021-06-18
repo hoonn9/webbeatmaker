@@ -1,10 +1,16 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import Workspace from '../Workspace';
+import { TrackContext } from '@contexts/TrackContext';
+import Header from '@components/Header';
+import '../../tailwind.css';
 
 const App = () => {
   return (
     <div>
-      <Workspace />
+      <Header />
+      <TrackContext>
+        <Workspace />
+      </TrackContext>
     </div>
   );
 };
