@@ -1,16 +1,57 @@
 import { useTrackState } from '@contexts/TrackContext';
 import { msToTime } from '@utils/time';
-import React, { VFC } from 'react';
+import React, { EventHandler, FocusEvent, useCallback, useState, VFC } from 'react';
 
 interface Props {}
 
 const Controller: VFC<Props> = ({}) => {
-  const { ms, playing, play, pause, stop } = useTrackState();
+  const {
+    ms,
+    playing,
+    play,
+    pause,
+    stop,
+    bpm: bpmState,
+    changeBpm,
+    barLength: barLengthState,
+    changeBarLength,
+    splitBeat: splitBeatState,
+    changeSplitBeat,
+  } = useTrackState();
+
+  const [bpm, setBpm] = useState<number>(bpmState);
+  const [barLength, setBarLength] = useState<number>(barLengthState);
+
+  const [splitBeat, setSplitBeat] = useState<number>(splitBeatState);
+
+  const onChangeBPM = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      const num = +value;
+      if (typeof num !== 'number') {
+        return;
+      }
+      setBpm(num);
+    },
+    [setBpm],
+  );
+
+  const onBlurBPM = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      changeBpm(+value);
+    },
+    [changeBpm],
+  );
 
   return (
     <div className="flex justify-center items-center absolute bottom-0 w-full">
       <div className="flex w-auto bg-blue-300 py-1 px-2 rounded-t-xl">
         <div className="font-bold border w-16 text-right mr-4">{ms < 0 ? 0 : msToTime(ms)}</div>
+        <div>
+          <label>BPM</label>
+          <input type="number" pattern="[0-9]+" onBlur={onBlurBPM} value={bpm} onChange={onChangeBPM} />
+        </div>
         <div>
           {playing ? (
             <button onClick={stop} className="focus:outline-none">

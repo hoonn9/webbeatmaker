@@ -3,12 +3,15 @@ import { Beat, Instrument, Sound } from '@typings/common.types';
 import { Howl } from 'howler';
 import BeatPad from './BeatPad';
 import { useTrackState } from '@contexts/TrackContext';
+import { getMsByBpm } from '@utils/time';
 
 interface Props {
   instrument: Instrument;
 }
 
 const Track: VFC<Props> = ({ instrument }) => {
+  const { playing, ms, bpm, barLength, splitBeat } = useTrackState();
+
   const sound = useMemo(() => {
     const sound: Sound = new Howl({
       src: [instrument.audio.src],
@@ -17,29 +20,24 @@ const Track: VFC<Props> = ({ instrument }) => {
   }, []);
 
   const [beats, setBeats] = useState<Beat[]>(
-    Array.from({ length: instrument.length }, () => ({
+    Array.from({ length: barLength * 4 * splitBeat }, () => ({
       trigger: false,
       sound: sound,
     })),
   );
 
-  const { playing, ms, bpm } = useTrackState();
-
+  const msByBpm = useMemo(() => {
+    return +(getMsByBpm(bpm) / (4 * splitBeat)).toFixed(0);
+  }, [bpm]);
   /**
    * bpm 60 => 1초에 1번
    * ms / 1000 => 1beat
    */
+
   useEffect(() => {
-    console.log(ms);
-    if (playing && ms % 200 === 0) {
-      const beatPosition = ms / 200;
-
-      console.log('beatPosition', beatPosition);
-      console.log('beats length', beats.length);
-
+    if (playing && ms % msByBpm === 0) {
+      const beatPosition = ms / msByBpm;
       if (beats.length > beatPosition) {
-        console.log('beats[beatPosition]', beats[beatPosition]);
-
         if (beats[beatPosition].trigger) {
           beats[beatPosition].sound.play();
         }
@@ -70,10 +68,9 @@ const Track: VFC<Props> = ({ instrument }) => {
       </div>
       <div className="flex w-full">
         {beats.map((beat, index) => {
-          if (index % 4 === 0) {
+          if (index % (4 * splitBeat) === 0) {
             return (
               <>
-                <span className="w-1" />
                 <BeatPad key={index} index={index} beat={beat} onClickBeatPad={onClickBeatPad} />
               </>
             );

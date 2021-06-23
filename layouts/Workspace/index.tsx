@@ -23,7 +23,21 @@ const drum808: AudioSourceMap = {
   },
 };
 
-const barLength = 32;
+const drumDrill: AudioSourceMap = {
+  kick: {
+    src: './audios/drums/drill/kick.wav',
+  },
+  snare: {
+    src: './audios/drums/drill/snare.wav',
+  },
+  hihat: {
+    src: './audios/drums/drill/hihat.wav',
+  },
+  clap: {
+    src: './audios/drums/drill/clap.wav',
+  },
+};
+
 const beatPerBar = 4;
 const splitBeat = 4;
 const bpm = 60;
@@ -43,7 +57,6 @@ const Workspace: VFC<Props> = () => {
     return {
       name: name,
       audio: audioSource,
-      length: barLength,
     };
   };
 

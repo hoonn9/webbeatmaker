@@ -3,3 +3,7 @@ export const msToTime = (ms: number) => {
   const sec = now_sec % 60;
   return sec;
 };
+
+export const getMsByBpm = (bpm: number) => {
+  return (60 / bpm) * 1000;
+};

@@ -40,7 +40,6 @@ export interface AudioSourceMap {
 export type Instrument = {
   name: string;
   audio: AudioSource;
-  length: number;
 };
 
 export type Kit = {
