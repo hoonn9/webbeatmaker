@@ -43,5 +43,6 @@ export type Instrument = {
 };
 
 export type Kit = {
+  name: string;
   instruments: Instrument[];
 };

@@ -6,7 +6,7 @@ import '../../tailwind.css';
 
 const App = () => {
   return (
-    <div>
+    <div className="bg-black min-h-screen">
       <Header />
       <TrackContext>
         <Workspace />

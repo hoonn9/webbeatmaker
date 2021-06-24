@@ -50,11 +50,18 @@ const Controller: VFC<Props> = ({}) => {
         <div className="font-bold border w-16 text-right mr-4">{ms < 0 ? 0 : msToTime(ms)}</div>
         <div>
           <label>BPM</label>
-          <input type="number" pattern="[0-9]+" onBlur={onBlurBPM} value={bpm} onChange={onChangeBPM} />
+          <input
+            className="text-3xl text-black"
+            type="number"
+            pattern="[0-9]+"
+            onBlur={onBlurBPM}
+            value={bpm}
+            onChange={onChangeBPM}
+          />
         </div>
         <div>
           {playing ? (
-            <button onClick={stop} className="focus:outline-none">
+            <button onClick={stop} className="w-8 h-8 focus:outline-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
