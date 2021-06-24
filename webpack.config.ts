@@ -50,16 +50,16 @@ const config: Configuration = {
             '@babel/preset-react',
             '@babel/preset-typescript',
           ],
-          // env: {
-          //   development: {
-          //     plugins: [['@emotion', { sourceMap: true }], require.resolve('react-refresh/babel')],
-          //   },
-          //   production: {
-          //     plugins: ['@emotion'],
-          //   },
-          // },
         },
         exclude: path.join(__dirname, 'node_modules'),
+      },
+      {
+        test: /\.wav$/i,
+        use: [
+          {
+            loader: 'file-loader',
+          },
+        ],
       },
       {
         test: /\.css?$/,
@@ -76,7 +76,10 @@ const config: Configuration = {
     }),
     new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
     new CopyPlugin({
-      patterns: [{ from: 'index.html', to: path.join(__dirname, 'build') }],
+      patterns: [
+        { from: 'index.html', to: path.join(__dirname, 'build') },
+        { from: 'audios', to: path.join(__dirname, 'build/audios') },
+      ],
     }),
   ],
   output: {
