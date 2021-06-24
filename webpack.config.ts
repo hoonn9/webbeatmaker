@@ -4,6 +4,7 @@ import webpack, { Configuration as WebpackConfiguration } from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
+import CopyPlugin from 'copy-webpack-plugin';
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
@@ -74,11 +75,14 @@ const config: Configuration = {
       // },
     }),
     new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
+    new CopyPlugin({
+      patterns: [{ from: 'index.html', to: path.join(__dirname, 'build') }],
+    }),
   ],
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, 'build/dist'),
     filename: '[name].js',
-    publicPath: '/dist/',
+    publicPath: '/build/',
   },
   devServer: {
     historyApiFallback: true, // react router
