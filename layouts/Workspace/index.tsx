@@ -1,43 +1,44 @@
-import React, { ChangeEvent, EventHandler, useCallback, useEffect, useMemo, useState, VFC } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState, VFC } from 'react';
 import Track from '@components/Track';
-import { AudioSource, AudioSourceMap, Beat, Instrument, Kit } from '@typings/common.types';
+import { AudioSource, AudioSourceMap, Instrument, Kit } from '@typings/common.types';
 import Controller from '@components/Controller';
+import { useTrackState } from '@contexts/TrackContext';
 
 interface Props {}
 
 const drum808: AudioSourceMap = {
   kick: {
-    src: './audios/drums/808/kick.wav',
+    src: 'drums/808/kick',
   },
   snare: {
-    src: './audios/drums/808/snare.wav',
+    src: 'drums/808/snare',
   },
   closeHH: {
-    src: './audios/drums/808/closeHH.wav',
+    src: 'drums/808/closeHH',
   },
   openHH: {
-    src: './audios/drums/808/openHH.wav',
+    src: 'drums/808/openHH',
   },
   clap: {
-    src: './audios/drums/808/clap.wav',
+    src: 'drums/808/clap',
   },
   bass: {
-    src: './audios/drums/808/bass.wav',
+    src: 'drums/808/bass',
   },
 };
 
 const drumDrill: AudioSourceMap = {
   kick: {
-    src: './audios/drums/drill/kick.wav',
+    src: 'drums/drill/kick',
   },
   snare: {
-    src: './audios/drums/drill/snare.wav',
+    src: 'drums/drill/snare',
   },
   hihat: {
-    src: './audios/drums/drill/hihat.wav',
+    src: 'drums/drill/hihat',
   },
   clap: {
-    src: './audios/drums/drill/clap.wav',
+    src: 'drums/drill/clap',
   },
 };
 
@@ -97,11 +98,21 @@ const Workspace: VFC<Props> = () => {
     [kitList],
   );
 
+  const { barLength, splitBeat } = useTrackState();
   console.log('kit', kit);
+
+  // const divideRender = useMemo(() => {
+  //   const result = [];
+  //   for (let i = 0; i < barLength; i++) {
+  //     result.push(<div className={`absolute h-full bg-white w-px`} style={{ left: `${i * splitBeat * 32}px` }} />);
+  //   }
+  //   return result;
+  // }, [barLength, splitBeat]);
 
   return (
     <div className="bg-black">
       <div className="overflow-scroll scrollbar scrollbar-track-gray-500 scrollbar-thumb-gray-500">
+        {/* <div className={`absolute left-32 h-full`}>{divideRender}</div> */}
         {kit.instruments.map((inst) => {
           return <Track instrument={inst} />;
         })}

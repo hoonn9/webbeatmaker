@@ -18,8 +18,8 @@
       "@utils/*": ["utils/*"],
       "@typings/*": ["typings/*"],
       "@classes/*": ["classes/*"],
-      "@audios/*": ["audios/*"],
-      "@contexts/*": ["contexts/*"]
+      "@contexts/*": ["contexts/*"],
+      "@assets/*": ["assets/*"]
     }
   }
 }

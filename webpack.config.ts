@@ -26,8 +26,8 @@ const config: Configuration = {
       '@utils': path.resolve(__dirname, 'utils'),
       '@typings': path.resolve(__dirname, 'typings'),
       '@classes': path.resolve(__dirname, 'classes'),
-      '@audios': path.resolve(__dirname, 'audios'),
       '@contexts': path.resolve(__dirname, 'contexts'),
+      '@assets': path.resolve(__dirname, 'assets'),
     },
   },
   entry: {
@@ -54,10 +54,13 @@ const config: Configuration = {
         exclude: path.join(__dirname, 'node_modules'),
       },
       {
-        test: /\.wav$/i,
+        test: /\.(png|jpe?g|wav)$/i,
         use: [
           {
             loader: 'file-loader',
+            options: {
+              name: '[name].[contenthash].[ext]',
+            },
           },
         ],
       },
@@ -77,15 +80,15 @@ const config: Configuration = {
     new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
     new CopyPlugin({
       patterns: [
-        { from: 'index.html', to: path.join(__dirname, 'build') },
-        { from: 'audios', to: path.join(__dirname, 'build/audios') },
+        { from: 'index.html', to: path.join(__dirname, 'dist') },
+        // { from: 'audios', to: path.join(__dirname, 'dist/audios') },
       ],
     }),
   ],
   output: {
-    path: path.join(__dirname, 'build/dist'),
+    path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: '/build/',
+    publicPath: '/dist/',
   },
   devServer: {
     historyApiFallback: true, // react router

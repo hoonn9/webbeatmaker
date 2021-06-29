@@ -47,7 +47,7 @@ const Controller: VFC<Props> = ({}) => {
   return (
     <div className="flex justify-center items-center absolute bottom-0 w-full">
       <div className="flex w-auto bg-blue-300 py-1 px-2 rounded-t-xl">
-        <div className="font-bold border w-16 text-right mr-4">{ms < 0 ? 0 : msToTime(ms)}</div>
+        <div className="font-bold border w-16 text-right mr-4">{(ms < 0 ? 0 : msToTime(ms)).toFixed(2)}</div>
         <div>
           <label>BPM</label>
           <input

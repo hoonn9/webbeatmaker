@@ -5,5 +5,5 @@ export const msToTime = (ms: number) => {
 };
 
 export const getMsByBpm = (bpm: number) => {
-  return (60 / bpm) * 1000;
+  return (60 / bpm) * 10000;
 };

@@ -18,16 +18,15 @@ interface ContextProps {
 const Context = createContext<ContextProps | undefined>(undefined);
 
 const beatPerBar = 4;
-const splitBeat = 4;
 const DEFAULT_BPM = 60;
-const DEFAULT_BAR_LENGTH = 4;
-const DEFAULT_SPLIT_BEAT = 2;
+const DEFAULT_BAR_LENGTH = 8;
+const DEFAULT_SPLIT_BEAT = 4;
 
 interface Props {}
 
 export const TrackContext: FC<Props> = ({ children }) => {
-  const [ms, setMs] = useState<number>(-100);
-  const [delay, setDelay] = useState<number>(1);
+  const [delay, setDelay] = useState<number>(10);
+  const [ms, setMs] = useState<number>(-delay * 10);
   const [bpm, setBpm] = useState<number>(DEFAULT_BPM);
   const [barLength, setBarLength] = useState<number>(DEFAULT_BAR_LENGTH);
   const [splitBeat, setSplitBeat] = useState<number>(DEFAULT_SPLIT_BEAT);
@@ -36,7 +35,7 @@ export const TrackContext: FC<Props> = ({ children }) => {
 
   useInterval(
     () => {
-      setMs((time) => time + delay);
+      setMs((time) => time + delay * 10);
     },
     playing ? delay : null,
   );
@@ -50,7 +49,7 @@ export const TrackContext: FC<Props> = ({ children }) => {
   }, []);
 
   const pause = useCallback(() => {
-    setMs(-delay);
+    setMs(-delay * 10);
     setPlaying(false);
   }, []);
 
