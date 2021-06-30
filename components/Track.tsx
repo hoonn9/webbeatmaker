@@ -3,15 +3,15 @@ import { Beat, Instrument, Sound } from '@typings/common.types';
 import { Howl } from 'howler';
 import BeatPad from './BeatPad';
 import { useTrackState } from '@contexts/TrackContext';
-import { getMsByBpm } from '@utils/time';
 
 interface Props {
   instrument: Instrument;
 }
 
 const Track: VFC<Props> = ({ instrument }) => {
-  const { playing, ms, bpm, barLength, splitBeat } = useTrackState();
-  const [audio, setAudio] = useState<any>();
+  const { playing, beatPosition, barLength, splitBeat } = useTrackState();
+  const [audio, setAudio] = useState<string>();
+  const [icon, setIcon] = useState<string>();
 
   useEffect(() => {
     const load = async () => {
@@ -19,9 +19,18 @@ const Track: VFC<Props> = ({ instrument }) => {
       if (audio?.default) {
         setAudio(audio.default);
       }
+
+      console.log(instrument.audio.icon);
+      if (instrument.audio.icon) {
+        const icon = await import(`@assets/images/${instrument.audio.icon}.png`);
+        console.log(icon);
+        if (icon?.default) {
+          setIcon(icon.default);
+        }
+      }
     };
     load();
-  }, []);
+  }, [instrument]);
 
   const sound = useMemo(() => {
     if (audio) {
@@ -36,6 +45,7 @@ const Track: VFC<Props> = ({ instrument }) => {
 
   useEffect(() => {
     if (sound) {
+      console.log('sound change', sound);
       setBeats(
         Array.from({ length: barLength * splitBeat }, () => ({
           trigger: false,
@@ -45,28 +55,15 @@ const Track: VFC<Props> = ({ instrument }) => {
     }
   }, [sound]);
 
-  const msByBpm = useMemo(() => {
-    return +(getMsByBpm(bpm) / splitBeat).toFixed(0);
-  }, [bpm]);
-  /**
-   * bpm 60 => 1초에 1번
-   * ms / 1000 => 1beat
-   */
-
   useEffect(() => {
-    console.log(ms, msByBpm);
-
-    if (beats && playing && ms % msByBpm === 0) {
-      console.log(ms, msByBpm);
-      const beatPosition = ms / msByBpm;
-      console.log(beatPosition);
+    if (beats && playing) {
       if (beats.length > beatPosition) {
         if (beats[beatPosition].trigger) {
           beats[beatPosition].sound.play();
         }
       }
     }
-  }, [ms, beats]);
+  }, [beats, playing, beatPosition]);
 
   const onClickBeatPad = useCallback(
     (index: number) => {
@@ -74,10 +71,11 @@ const Track: VFC<Props> = ({ instrument }) => {
         return;
       }
       const beat = beats[index];
-      console.log(index, beat);
+
       if (!beat.trigger) {
         beat.sound.play();
       }
+
       setBeats((prev) => {
         const temp = [...(prev as Beat[])];
         temp[index].trigger = !temp[index].trigger;
@@ -92,20 +90,16 @@ const Track: VFC<Props> = ({ instrument }) => {
   }
 
   return (
-    <div className="w-full flex h-16">
-      <div>
-        <label className="w-32 inline-block font-bold text-xl">{instrument.name}</label>
+    <div className="w-full flex">
+      <div className="w-20 flex-shrink-0">
+        {icon ? (
+          <img className="w-8 h-8" src={icon} />
+        ) : (
+          <label className="w-32 inline-block font-bold text-xl">{instrument.name}</label>
+        )}
       </div>
-      <div className="flex w-full">
+      <div className="flex flex-1">
         {beats.map((beat, index) => {
-          if (index % splitBeat === 0) {
-            return (
-              <>
-                <div className={` h-full bg-white w-px`} />
-                <BeatPad key={index} index={index} beat={beat} onClickBeatPad={onClickBeatPad} />
-              </>
-            );
-          }
           return <BeatPad key={index} index={index} beat={beat} onClickBeatPad={onClickBeatPad} />;
         })}
       </div>

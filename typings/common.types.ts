@@ -1,5 +1,6 @@
 export interface AudioSource {
   src: string;
+  icon?: string;
 }
 
 export interface Sound {
@@ -10,20 +11,6 @@ export type Beat = {
   trigger: boolean;
   sound: Sound;
 };
-
-// interface KitImpl {
-//   instruments: Instrument[];
-// }
-
-// export class Kit implements KitImpl {
-//   instruments: Instrument[];
-//   constructor(audioSources: AudioSourceMap, barLength: number) {
-//     this.instruments = Object.entries(audioSources).map((e) => {
-//       const [name, audio] = e;
-//       return new Instrument(name, audio, barLength);
-//     });
-//   }
-// }
 
 export interface DrumSource {
   kick: AudioSource;

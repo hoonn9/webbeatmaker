@@ -3,11 +3,7 @@ import React, { VFC } from 'react';
 interface Props {}
 
 const Header: VFC<Props> = ({}) => {
-  return (
-    <div className="flex justify-center items-center h-32 ">
-      <div className="text-2xl">WebBeatMaker</div>
-    </div>
-  );
+  return <div className="flex justify-center items-center h-24 "></div>;
 };
 
 export default Header;

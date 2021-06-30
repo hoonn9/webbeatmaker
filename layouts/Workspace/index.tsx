@@ -9,6 +9,7 @@ interface Props {}
 const drum808: AudioSourceMap = {
   kick: {
     src: 'drums/808/kick',
+    icon: 'drum/kick',
   },
   snare: {
     src: 'drums/808/snare',
@@ -98,21 +99,9 @@ const Workspace: VFC<Props> = () => {
     [kitList],
   );
 
-  const { barLength, splitBeat } = useTrackState();
-  console.log('kit', kit);
-
-  // const divideRender = useMemo(() => {
-  //   const result = [];
-  //   for (let i = 0; i < barLength; i++) {
-  //     result.push(<div className={`absolute h-full bg-white w-px`} style={{ left: `${i * splitBeat * 32}px` }} />);
-  //   }
-  //   return result;
-  // }, [barLength, splitBeat]);
-
   return (
     <div className="bg-black">
       <div className="overflow-scroll scrollbar scrollbar-track-gray-500 scrollbar-thumb-gray-500">
-        {/* <div className={`absolute left-32 h-full`}>{divideRender}</div> */}
         {kit.instruments.map((inst) => {
           return <Track instrument={inst} />;
         })}

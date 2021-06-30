@@ -13,25 +13,33 @@ interface Props {
 }
 
 const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad }) => {
-  const { barLength, splitBeat } = useTrackState();
+  const { splitBeat } = useTrackState();
+
+  const splitClassName = useMemo(() => {
+    if (index % splitBeat === 0) {
+      return 'border-l-2';
+    }
+  }, [index, splitBeat]);
 
   const render = useMemo(() => {
     if (beat.trigger) {
       return (
-        <button className="bg-blue-300 flex-1" onClick={() => onClickBeatPad(index)}>
+        <button className={`bg-blue-300 w-full h-full ${splitClassName}`} onClick={() => onClickBeatPad(index)}>
           <img className="w-full h-full object-fill" src={PadOn} />
         </button>
       );
     } else {
       return (
-        <button className="bg-white flex-1" onClick={() => onClickBeatPad(index)}>
-          <img className="w-full h-full object-fill" src={PadOff} />
-        </button>
+        <button className={`bg-white border w-full h-full ${splitClassName}`} onClick={() => onClickBeatPad(index)} />
       );
     }
   }, [beat.trigger, index, splitBeat]);
 
-  return <div className="w-4 h-8 flex mx-2">{render}</div>;
+  return (
+    <div className="flex-shrink-0" style={{ width: 24, height: 32 }}>
+      {render}
+    </div>
+  );
 };
 
 export default BeatPad;
