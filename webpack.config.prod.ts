@@ -13,7 +13,6 @@ interface Configuration extends WebpackConfiguration {
 const config: Configuration = {
   name: 'webbeatmaker',
   mode: 'production',
-  devtool: 'hidden-source-map',
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
@@ -72,33 +71,16 @@ const config: Configuration = {
   plugins: [
     new ForkTsCheckerWebpackPlugin({
       async: false,
-      // eslint: {
-      //   files: "./src/**/*",
-      // },
     }),
     new webpack.EnvironmentPlugin({ NODE_ENV: 'production' }),
     new CopyPlugin({
-      patterns: [
-        { from: 'public/index.html', to: path.join(__dirname, 'build') },
-        // { from: 'audios', to: path.join(__dirname, 'dist/audios') },
-      ],
+      patterns: [{ from: 'public/index.html', to: path.join(__dirname, 'build') }],
     }),
   ],
   output: {
     path: path.join(__dirname, '/build'),
     filename: '[name].js',
     publicPath: '/',
-  },
-  devServer: {
-    historyApiFallback: true, // react router
-    port: 3090,
-    publicPath: '/dist/',
-    // proxy: {
-    //   '/api/': {
-    //     target: 'http://localhost:3095',
-    //     changeOrigin: true,
-    //   },
-    // },
   },
 };
 

@@ -40,8 +40,8 @@ const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad, onMoveBeatPad }) => 
         <button
           draggable={false}
           className={`bg-blue-300 w-full h-full ${splitClassName}`}
-          onMouseDown={() => onClickBeatPad(index)}
-          onMouseUp={onMouseUp}
+          onPointerDown={onClickBeatPad.bind(this, index)}
+          onPointerUp={onMouseUp}
         >
           <img className="w-full h-full object-fill" src={PadOn} draggable={false} />
         </button>
@@ -51,15 +51,21 @@ const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad, onMoveBeatPad }) => 
         <button
           draggable={false}
           className={`bg-white border w-full h-full ${splitClassName}`}
-          onMouseDown={() => onClickBeatPad(index)}
-          onMouseUp={onMouseUp}
+          onPointerDown={onClickBeatPad.bind(this, index)}
+          onPointerUp={onMouseUp}
         />
       );
     }
   }, [beat.trigger, index, splitBeat]);
 
   return (
-    <div draggable={false} onMouseMove={onMouseMove} className="flex-shrink-0" style={{ width: 24, height: 32 }}>
+    <div
+      draggable={false}
+      onMouseMove={onMouseMove}
+      onTouchMove={onMouseMove}
+      className="flex-shrink-0"
+      style={{ width: 24, height: 32 }}
+    >
       {render}
     </div>
   );
