@@ -19,7 +19,8 @@
       "@typings/*": ["typings/*"],
       "@classes/*": ["classes/*"],
       "@contexts/*": ["contexts/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@constants/*": ["constants/*"]
     }
   }
 }

@@ -1,51 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useState, VFC } from 'react';
-import { Beat, Instrument, Sound } from '@typings/common.types';
-import { Howl } from 'howler';
+import React, { useCallback, useEffect, useState, VFC } from 'react';
+import { Beat, Instrument } from '@typings/common.types';
 import BeatPad from './BeatPad';
-import { useTrackState } from '@contexts/TrackContext';
+import { useWorkstation } from '@contexts/WorkstationContext';
+import useAudio from '@hooks/useAudio';
+import { PadInputMethod, useTrack } from '@contexts/TrackContext';
 
 interface Props {
   instrument: Instrument;
 }
 
 const Track: VFC<Props> = ({ instrument }) => {
-  const { playing, beatPosition, barLength, splitBeat } = useTrackState();
-  const [audio, setAudio] = useState<string>();
-  const [icon, setIcon] = useState<string>();
+  const { playing, beatPosition, barLength, splitBeat } = useWorkstation();
+  const { setPadInputMethod } = useTrack();
 
-  useEffect(() => {
-    const load = async () => {
-      const audio = await import(`@assets/audios/${instrument.audio.src}.wav`);
-      if (audio?.default) {
-        setAudio(audio.default);
-      }
-
-      console.log(instrument.audio.icon);
-      if (instrument.audio.icon) {
-        const icon = await import(`@assets/images/${instrument.audio.icon}.png`);
-        console.log(icon);
-        if (icon?.default) {
-          setIcon(icon.default);
-        }
-      }
-    };
-    load();
-  }, [instrument]);
-
-  const sound = useMemo(() => {
-    if (audio) {
-      const sound: Sound = new Howl({
-        src: [audio],
-      });
-      return sound;
-    }
-  }, [audio]);
-
+  const { sound, iconUrl } = useAudio(instrument);
   const [beats, setBeats] = useState<Beat[]>();
 
   useEffect(() => {
     if (sound) {
-      console.log('sound change', sound);
       setBeats(
         Array.from({ length: barLength * splitBeat }, () => ({
           trigger: false,
@@ -59,6 +31,7 @@ const Track: VFC<Props> = ({ instrument }) => {
     if (beats && playing) {
       if (beats.length > beatPosition) {
         if (beats[beatPosition].trigger) {
+          console.log(beatPosition);
           beats[beatPosition].sound.play();
         }
       }
@@ -76,11 +49,42 @@ const Track: VFC<Props> = ({ instrument }) => {
         beat.sound.play();
       }
 
+      if (beats[index].trigger) {
+        setPadInputMethod('remove');
+      } else {
+        setPadInputMethod('write');
+      }
+
       setBeats((prev) => {
         const temp = [...(prev as Beat[])];
         temp[index].trigger = !temp[index].trigger;
         return temp;
       });
+    },
+    [beats],
+  );
+
+  const onMoveBeatPad = useCallback(
+    (index: number, method: PadInputMethod) => {
+      if (!beats) {
+        return;
+      }
+      const beat = beats[index];
+
+      if (beat.trigger && method === 'remove') {
+        setBeats((prev) => {
+          const temp = [...(prev as Beat[])];
+          temp[index].trigger = false;
+          return temp;
+        });
+      } else if (!beat.trigger && method === 'write') {
+        beat.sound.play();
+        setBeats((prev) => {
+          const temp = [...(prev as Beat[])];
+          temp[index].trigger = true;
+          return temp;
+        });
+      }
     },
     [beats],
   );
@@ -92,15 +96,23 @@ const Track: VFC<Props> = ({ instrument }) => {
   return (
     <div className="w-full flex">
       <div className="w-20 flex-shrink-0">
-        {icon ? (
-          <img className="w-8 h-8" src={icon} />
+        {iconUrl ? (
+          <img className="w-8 h-8" src={iconUrl} />
         ) : (
           <label className="w-32 inline-block font-bold text-xl">{instrument.name}</label>
         )}
       </div>
       <div className="flex flex-1">
         {beats.map((beat, index) => {
-          return <BeatPad key={index} index={index} beat={beat} onClickBeatPad={onClickBeatPad} />;
+          return (
+            <BeatPad
+              key={index}
+              index={index}
+              beat={beat}
+              onClickBeatPad={onClickBeatPad}
+              onMoveBeatPad={onMoveBeatPad}
+            />
+          );
         })}
       </div>
     </div>

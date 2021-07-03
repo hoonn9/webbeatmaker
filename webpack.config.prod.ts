@@ -10,12 +10,10 @@ interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
 const config: Configuration = {
   name: 'webbeatmaker',
-  mode: isDevelopment ? 'development' : 'production',
-  devtool: !isDevelopment ? 'hidden-source-map' : 'eval',
+  mode: 'production',
+  devtool: 'hidden-source-map',
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
@@ -45,7 +43,7 @@ const config: Configuration = {
               '@babel/preset-env',
               {
                 targets: { browsers: ['last 2 chrome versions'] },
-                debug: isDevelopment,
+                debug: false,
               },
             ],
             '@babel/preset-react',
@@ -78,18 +76,18 @@ const config: Configuration = {
       //   files: "./src/**/*",
       // },
     }),
-    new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
+    new webpack.EnvironmentPlugin({ NODE_ENV: 'production' }),
     new CopyPlugin({
       patterns: [
-        { from: 'public/index.html', to: path.join(__dirname, 'dist') },
+        { from: 'public/index.html', to: path.join(__dirname, 'build') },
         // { from: 'audios', to: path.join(__dirname, 'dist/audios') },
       ],
     }),
   ],
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, '/build'),
     filename: '[name].js',
-    publicPath: '/dist/',
+    publicPath: '/',
   },
   devServer: {
     historyApiFallback: true, // react router
@@ -103,15 +101,5 @@ const config: Configuration = {
     // },
   },
 };
-
-if (isDevelopment && config.plugins) {
-  config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  config.plugins.push(new ReactRefreshWebpackPlugin());
-  // config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
-}
-if (!isDevelopment && config.plugins) {
-  config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
-  // config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
-}
 
 export default config;

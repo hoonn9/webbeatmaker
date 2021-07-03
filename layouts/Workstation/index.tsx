@@ -2,51 +2,29 @@ import React, { ChangeEvent, useCallback, useEffect, useMemo, useState, VFC } fr
 import Track from '@components/Track';
 import { AudioSource, AudioSourceMap, Instrument, Kit } from '@typings/common.types';
 import Controller from '@components/Controller';
-import { useTrackState } from '@contexts/TrackContext';
+import { DRUM_808 } from '@constants/sourceMaps/drum';
+import Melody from '@components/Melody';
+import { TrackContext } from '@contexts/TrackContext';
 
 interface Props {}
-
-const drum808: AudioSourceMap = {
-  kick: {
-    src: 'drums/808/kick',
-    icon: 'drum/kick',
-  },
-  snare: {
-    src: 'drums/808/snare',
-  },
-  closeHH: {
-    src: 'drums/808/closeHH',
-  },
-  openHH: {
-    src: 'drums/808/openHH',
-  },
-  clap: {
-    src: 'drums/808/clap',
-  },
-  bass: {
-    src: 'drums/808/bass',
-  },
-};
-
-const drumDrill: AudioSourceMap = {
-  kick: {
-    src: 'drums/drill/kick',
-  },
-  snare: {
-    src: 'drums/drill/snare',
-  },
-  hihat: {
-    src: 'drums/drill/hihat',
-  },
-  clap: {
-    src: 'drums/drill/clap',
-  },
-};
 
 type SelectKit = {
   index: number;
   name: string;
   audioSourceMap: AudioSourceMap;
+};
+
+const styles = {
+  '*::-webkit-scrollbar': {
+    width: '0.4em',
+  },
+  '*::-webkit-scrollbar-track': {
+    '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
+  },
+  '*::-webkit-scrollbar-thumb': {
+    backgroundColor: 'rgba(0,0,0,.1)',
+    outline: '1px solid slategrey',
+  },
 };
 
 const Workspace: VFC<Props> = () => {
@@ -72,12 +50,7 @@ const Workspace: VFC<Props> = () => {
       {
         index: 0,
         name: '808',
-        audioSourceMap: drum808,
-      },
-      {
-        index: 1,
-        name: 'drill',
-        audioSourceMap: drumDrill,
+        audioSourceMap: DRUM_808,
       },
     ],
     [],
@@ -101,11 +74,6 @@ const Workspace: VFC<Props> = () => {
 
   return (
     <div className="bg-black">
-      <div className="overflow-scroll scrollbar scrollbar-track-gray-500 scrollbar-thumb-gray-500">
-        {kit.instruments.map((inst) => {
-          return <Track instrument={inst} />;
-        })}
-      </div>
       <div className="text-2xl">
         <label className="mr-4">SELECT KIT</label>
         <select
@@ -118,6 +86,26 @@ const Workspace: VFC<Props> = () => {
           })}
         </select>
       </div>
+      <div className="overflow-x-scroll scrollbar scrollbar-track-yellow-500 scrollbar-thumb-yellow-400 ">
+        <TrackContext>
+          {kit.instruments.map((inst) => {
+            return <Track instrument={inst} />;
+          })}
+        </TrackContext>
+      </div>
+      <div className="flex h-64">
+        <Melody
+          instrument={{
+            name: 'skimask',
+            rate: 120,
+            audio: {
+              src: 'melody/pianos/skimask-piano',
+              icon: 'melody/trap-piano',
+            },
+          }}
+        />
+      </div>
+
       <Controller />
     </div>
   );

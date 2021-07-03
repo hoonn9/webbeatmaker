@@ -1,8 +1,9 @@
-import { useTrackState } from '@contexts/TrackContext';
+import { useWorkstation } from '@contexts/WorkstationContext';
 import { Beat } from '@typings/common.types';
-import React, { useMemo, VFC } from 'react';
+import React, { useCallback, useMemo, VFC } from 'react';
 import PadOff from '@assets/pad-off.png';
 import PadOn from '@assets/pad-on.png';
+import { PadInputMethod, useTrack } from '@contexts/TrackContext';
 
 // const PadOff = require('@assets/pad-off.png');
 
@@ -10,10 +11,12 @@ interface Props {
   index: number;
   beat: Beat;
   onClickBeatPad: (index: number) => void;
+  onMoveBeatPad: (index: number, method: PadInputMethod) => void;
 }
 
-const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad }) => {
-  const { splitBeat } = useTrackState();
+const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad, onMoveBeatPad }) => {
+  const { splitBeat } = useWorkstation();
+  const { padInputMethod, setPadInputMethod } = useTrack();
 
   const splitClassName = useMemo(() => {
     if (index % splitBeat === 0) {
@@ -21,22 +24,42 @@ const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad }) => {
     }
   }, [index, splitBeat]);
 
+  const onMouseMove = useCallback(() => {
+    if (padInputMethod) {
+      onMoveBeatPad(index, padInputMethod);
+    }
+  }, [padInputMethod]);
+
+  const onMouseUp = useCallback(() => {
+    setPadInputMethod(null);
+  }, []);
+
   const render = useMemo(() => {
     if (beat.trigger) {
       return (
-        <button className={`bg-blue-300 w-full h-full ${splitClassName}`} onClick={() => onClickBeatPad(index)}>
-          <img className="w-full h-full object-fill" src={PadOn} />
+        <button
+          draggable={false}
+          className={`bg-blue-300 w-full h-full ${splitClassName}`}
+          onMouseDown={() => onClickBeatPad(index)}
+          onMouseUp={onMouseUp}
+        >
+          <img className="w-full h-full object-fill" src={PadOn} draggable={false} />
         </button>
       );
     } else {
       return (
-        <button className={`bg-white border w-full h-full ${splitClassName}`} onClick={() => onClickBeatPad(index)} />
+        <button
+          draggable={false}
+          className={`bg-white border w-full h-full ${splitClassName}`}
+          onMouseDown={() => onClickBeatPad(index)}
+          onMouseUp={onMouseUp}
+        />
       );
     }
   }, [beat.trigger, index, splitBeat]);
 
   return (
-    <div className="flex-shrink-0" style={{ width: 24, height: 32 }}>
+    <div draggable={false} onMouseMove={onMouseMove} className="flex-shrink-0" style={{ width: 24, height: 32 }}>
       {render}
     </div>
   );

@@ -1,15 +1,17 @@
+import { Howl } from 'howler';
+
 export interface AudioSource {
   src: string;
   icon?: string;
 }
 
-export interface Sound {
-  play: () => void;
-}
+// export interface Sound {
+//   play: () => void;
+// }
 
 export type Beat = {
   trigger: boolean;
-  sound: Sound;
+  sound: Howl;
 };
 
 export interface DrumSource {
@@ -26,6 +28,7 @@ export interface AudioSourceMap {
 
 export type Instrument = {
   name: string;
+  rate?: number;
   audio: AudioSource;
 };
 

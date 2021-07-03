@@ -1,28 +1,13 @@
-import { useTrackState } from '@contexts/TrackContext';
+import { useWorkstation } from '@contexts/WorkstationContext';
 import { msToTime } from '@utils/time';
 import React, { EventHandler, FocusEvent, useCallback, useState, VFC } from 'react';
 
 interface Props {}
 
 const Controller: VFC<Props> = ({}) => {
-  const {
-    ms,
-    playing,
-    play,
-    pause,
-    stop,
-    bpm: bpmState,
-    changeBpm,
-    barLength: barLengthState,
-    changeBarLength,
-    splitBeat: splitBeatState,
-    changeSplitBeat,
-  } = useTrackState();
+  const { ms, playing, play, pause, bpm: bpmState, changeBpm } = useWorkstation();
 
   const [bpm, setBpm] = useState<number>(bpmState);
-  const [barLength, setBarLength] = useState<number>(barLengthState);
-
-  const [splitBeat, setSplitBeat] = useState<number>(splitBeatState);
 
   const onChangeBPM = useCallback(
     (e: FocusEvent<HTMLInputElement>) => {
@@ -60,17 +45,14 @@ const Controller: VFC<Props> = ({}) => {
         />
       </div>
       {playing ? (
-        <button onClick={stop} className="flex-1 w-full focus:outline-none text-red-400 text-5xl">
-          STOP
+        <button onClick={pause} className="flex-1 w-full focus:outline-none text-red-400 text-5xl">
+          PAUSE
         </button>
       ) : (
         <button onClick={play} className="flex-1 focus:outline-none text-green-300 text-5xl">
           PLAY
         </button>
       )}
-      <button onClick={pause} className="flex-1 focus:outline-none text-gray-400 text-5xl">
-        PAUSE
-      </button>
     </div>
   );
 };
