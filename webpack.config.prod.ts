@@ -1,10 +1,9 @@
 import path from 'path';
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack, { Configuration as WebpackConfiguration } from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
-import CopyPlugin from 'copy-webpack-plugin';
 
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
@@ -13,23 +12,23 @@ interface Configuration extends WebpackConfiguration {
 const config: Configuration = {
   name: 'webbeatmaker',
   mode: 'production',
+  entry: {
+    app: path.join(__dirname, 'src', 'client'),
+  },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
-      '@hooks': path.resolve(__dirname, 'hooks'),
-      '@components': path.resolve(__dirname, 'components'),
-      '@layouts': path.resolve(__dirname, 'layouts'),
-      '@pages': path.resolve(__dirname, 'pages'),
-      '@utils': path.resolve(__dirname, 'utils'),
-      '@typings': path.resolve(__dirname, 'typings'),
-      '@classes': path.resolve(__dirname, 'classes'),
-      '@contexts': path.resolve(__dirname, 'contexts'),
-      '@constants': path.resolve(__dirname, 'constants'),
+      '@hooks': path.resolve(__dirname, 'src/hooks'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@layouts': path.resolve(__dirname, 'src/layouts'),
+      '@pages': path.resolve(__dirname, 'src/pages'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
+      '@typings': path.resolve(__dirname, 'src/typings'),
+      '@classes': path.resolve(__dirname, 'src/classes'),
+      '@contexts': path.resolve(__dirname, 'src/contexts'),
+      '@constants': path.resolve(__dirname, 'src/constants'),
       '@assets': path.resolve(__dirname, 'assets'),
     },
-  },
-  entry: {
-    app: './client',
   },
   module: {
     rules: [
@@ -64,7 +63,16 @@ const config: Configuration = {
       },
       {
         test: /\.css?$/,
-        use: ['style-loader', 'css-loader'],
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            },
+          },
+          'postcss-loader',
+        ],
       },
     ],
   },
@@ -73,8 +81,9 @@ const config: Configuration = {
       async: false,
     }),
     new webpack.EnvironmentPlugin({ NODE_ENV: 'production' }),
-    new CopyPlugin({
-      patterns: [{ from: 'public/index.html', to: path.join(__dirname, 'build') }],
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: 'public/index.html',
     }),
   ],
   output: {

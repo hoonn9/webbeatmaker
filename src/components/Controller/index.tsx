@@ -30,13 +30,13 @@ const Controller: VFC<Props> = ({}) => {
   );
 
   return (
-    <div className="flex justify-center items-center absolute bottom-0 w-full bg-white">
-      <div className="flex-1">
-        <p className="font-bold w-16 text-right mr-4 text-black text-5xl">{(ms < 0 ? 0 : msToTime(ms)).toFixed(2)}</p>
+    <div className="flex h-1/6 w-full justify-center items-center bottom-0 bg-white">
+      <div className="w-1/3">
+        <p className="font-bold w-16 text-right mr-4 text-black text-4xl">{(ms < 0 ? 0 : msToTime(ms)).toFixed(2)}</p>
       </div>
-      <div className="flex flex-1 border border-black">
+      <div className="flex w-1/3 border border-black">
         <input
-          className="text-7xl w-48 text-black"
+          className="text-5xl w-48 text-black"
           type="number"
           pattern="[0-9]+"
           onBlur={onBlurBPM}
@@ -45,11 +45,11 @@ const Controller: VFC<Props> = ({}) => {
         />
       </div>
       {playing ? (
-        <button onClick={pause} className="flex-1 w-full focus:outline-none text-red-400 text-5xl">
+        <button onClick={pause} className="w-1/3  focus:outline-none text-red-400 text-4xl">
           PAUSE
         </button>
       ) : (
-        <button onClick={play} className="flex-1 focus:outline-none text-green-300 text-5xl">
+        <button onClick={play} className="w-1/3 focus:outline-none text-green-300 text-4xl">
           PLAY
         </button>
       )}

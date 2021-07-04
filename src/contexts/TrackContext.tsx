@@ -1,6 +1,4 @@
-import useInterval from '@hooks/useInterval';
-import { getMsByBpm } from '@utils/time';
-import React, { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, FC, useContext, useState } from 'react';
 
 export type PadInputMethod = 'write' | 'remove';
 

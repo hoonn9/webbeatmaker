@@ -74,7 +74,7 @@ const Workspace: VFC<Props> = () => {
 
   return (
     <div className="bg-black">
-      <div className="text-2xl">
+      <div className="h-1/6 text-2xl">
         <label className="mr-4">SELECT KIT</label>
         <select
           className="bg-black border-2 border-solid border-white p-2"
@@ -86,14 +86,17 @@ const Workspace: VFC<Props> = () => {
           })}
         </select>
       </div>
-      <div className="overflow-x-scroll scrollbar scrollbar-track-yellow-500 scrollbar-thumb-yellow-400 ">
+      <div
+        style={{ overflow: 'scroll' }}
+        className="h-2/6 overflow-scroll scrollbar scrollbar-track-black scrollbar-thumb-gray-400"
+      >
         <TrackContext>
           {kit.instruments.map((inst) => {
             return <Track instrument={inst} />;
           })}
         </TrackContext>
       </div>
-      <div className="flex h-64">
+      <div className="flex h-2/6">
         <Melody
           instrument={{
             name: 'skimask',
