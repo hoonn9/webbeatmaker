@@ -19,7 +19,7 @@
       "@typings/*": ["src/typings/*"],
       "@classes/*": ["src/classes/*"],
       "@contexts/*": ["src/contexts/*"],
-      "@assets/*": ["src/assets/*"],
+      "@assets/*": ["assets/*"],
       "@constants/*": ["src/constants/*"]
     }
   }
