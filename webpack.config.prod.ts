@@ -3,6 +3,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack, { Configuration as WebpackConfiguration } from 'webpack';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 // import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import CopyPlugin from 'copy-webpack-plugin';
 import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
 
 interface Configuration extends WebpackConfiguration {
@@ -81,9 +82,8 @@ const config: Configuration = {
       async: false,
     }),
     new webpack.EnvironmentPlugin({ NODE_ENV: 'production' }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'public/index.html',
+    new CopyPlugin({
+      patterns: [{ from: 'public/index.html', to: path.join(__dirname, 'build') }],
     }),
   ],
   output: {
