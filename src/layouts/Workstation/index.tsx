@@ -2,8 +2,9 @@ import React, { ChangeEvent, useCallback, useEffect, useMemo, useState, VFC } fr
 import Track from '@components/Track';
 import { AudioSource, AudioSourceMap, Instrument, Kit } from '@typings/common.types';
 import Controller from '@components/Controller';
-import { DRUM_808 } from '@constants/sourceMaps/drum';
+import { DRUM_808, DRUM_DRAKE } from '@constants/sourceMaps/drum';
 import Melody from '@components/Melody';
+import TrackPanel from '@components/TrackPanel';
 import { TrackContext } from '@contexts/TrackContext';
 
 interface Props {}
@@ -12,19 +13,6 @@ type SelectKit = {
   index: number;
   name: string;
   audioSourceMap: AudioSourceMap;
-};
-
-const styles = {
-  '*::-webkit-scrollbar': {
-    width: '0.4em',
-  },
-  '*::-webkit-scrollbar-track': {
-    '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
-  },
-  '*::-webkit-scrollbar-thumb': {
-    backgroundColor: 'rgba(0,0,0,.1)',
-    outline: '1px solid slategrey',
-  },
 };
 
 const Workspace: VFC<Props> = () => {
@@ -49,6 +37,11 @@ const Workspace: VFC<Props> = () => {
     (): SelectKit[] => [
       {
         index: 0,
+        name: 'Drake',
+        audioSourceMap: DRUM_DRAKE,
+      },
+      {
+        index: 1,
         name: '808',
         audioSourceMap: DRUM_808,
       },
@@ -82,20 +75,17 @@ const Workspace: VFC<Props> = () => {
           onChange={onChangeKit}
         >
           {kitList.map((selectKit, index) => {
-            return <option value={index}>{selectKit.name}</option>;
+            return (
+              <option key={index} value={index}>
+                {selectKit.name}
+              </option>
+            );
           })}
         </select>
       </div>
-      <div
-        style={{ overflow: 'scroll' }}
-        className="h-2/6 overflow-scroll scrollbar scrollbar-track-black scrollbar-thumb-gray-400"
-      >
-        <TrackContext>
-          {kit.instruments.map((inst) => {
-            return <Track instrument={inst} />;
-          })}
-        </TrackContext>
-      </div>
+      <TrackContext>
+        <TrackPanel instruments={kit.instruments} />
+      </TrackContext>
       <div className="flex h-2/6">
         <Melody
           instrument={{

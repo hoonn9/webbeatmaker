@@ -4,7 +4,7 @@ import BeatPad from './BeatPad';
 import { useWorkstation } from '@contexts/WorkstationContext';
 import useAudio from '@hooks/useAudio';
 import { PadInputMethod, useTrack } from '@contexts/TrackContext';
-
+import { cloneDeep } from 'lodash';
 interface Props {
   instrument: Instrument;
 }
@@ -14,24 +14,27 @@ const Track: VFC<Props> = ({ instrument }) => {
   const { setPadInputMethod } = useTrack();
 
   const { sound, iconUrl } = useAudio(instrument);
-  const [beats, setBeats] = useState<Beat[]>();
+  const [beats, setBeats] = useState<Beat[]>([]);
 
   useEffect(() => {
     if (sound) {
-      setBeats(
-        Array.from({ length: barLength * splitBeat }, () => ({
+      setBeats([]);
+      setBeats((prev) => {
+        prev.forEach((beat) => {
+          beat.sound.unload();
+        });
+        return Array.from({ length: barLength * splitBeat }, () => ({
           trigger: false,
           sound: sound,
-        })),
-      );
+        }));
+      });
     }
   }, [sound]);
 
   useEffect(() => {
-    if (beats && playing) {
+    if (playing) {
       if (beats.length > beatPosition) {
         if (beats[beatPosition].trigger) {
-          console.log(beatPosition);
           beats[beatPosition].sound.play();
         }
       }
@@ -40,13 +43,8 @@ const Track: VFC<Props> = ({ instrument }) => {
 
   const onClickBeatPad = useCallback(
     (index: number) => {
-      if (!beats) {
-        return;
-      }
-      const beat = beats[index];
-
-      if (!beat.trigger) {
-        beat.sound.play();
+      if (!beats[index].trigger) {
+        beats[index].sound.play();
       }
 
       if (beats[index].trigger) {
@@ -56,7 +54,7 @@ const Track: VFC<Props> = ({ instrument }) => {
       }
 
       setBeats((prev) => {
-        const temp = [...(prev as Beat[])];
+        const temp = cloneDeep(prev);
         temp[index].trigger = !temp[index].trigger;
         return temp;
       });
@@ -66,21 +64,18 @@ const Track: VFC<Props> = ({ instrument }) => {
 
   const onMoveBeatPad = useCallback(
     (index: number, method: PadInputMethod) => {
-      if (!beats) {
-        return;
-      }
       const beat = beats[index];
 
       if (beat.trigger && method === 'remove') {
         setBeats((prev) => {
-          const temp = [...(prev as Beat[])];
+          const temp = cloneDeep(prev);
           temp[index].trigger = false;
           return temp;
         });
       } else if (!beat.trigger && method === 'write') {
         beat.sound.play();
         setBeats((prev) => {
-          const temp = [...(prev as Beat[])];
+          const temp = cloneDeep(prev);
           temp[index].trigger = true;
           return temp;
         });
@@ -88,10 +83,6 @@ const Track: VFC<Props> = ({ instrument }) => {
     },
     [beats],
   );
-
-  if (!beats) {
-    return <div>...loading</div>;
-  }
 
   return (
     <div className="w-full flex">
@@ -119,4 +110,4 @@ const Track: VFC<Props> = ({ instrument }) => {
   );
 };
 
-export default Track;
+export default React.memo(Track);

@@ -7,11 +7,15 @@ interface Props {}
 const Controller: VFC<Props> = ({}) => {
   const { ms, playing, play, pause, bpm: bpmState, changeBpm } = useWorkstation();
 
-  const [bpm, setBpm] = useState<number>(bpmState);
+  const [bpm, setBpm] = useState<number | undefined>(bpmState);
 
   const onChangeBPM = useCallback(
     (e: FocusEvent<HTMLInputElement>) => {
       const { value } = e.target;
+      if (!value) {
+        setBpm(undefined);
+        return;
+      }
       const num = +value;
       if (typeof num !== 'number') {
         return;
@@ -24,9 +28,13 @@ const Controller: VFC<Props> = ({}) => {
   const onBlurBPM = useCallback(
     (e: FocusEvent<HTMLInputElement>) => {
       const { value } = e.target;
+      if (!value) {
+        setBpm(bpmState);
+        return;
+      }
       changeBpm(+value);
     },
-    [changeBpm],
+    [changeBpm, bpmState],
   );
 
   return (

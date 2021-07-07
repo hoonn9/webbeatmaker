@@ -33,6 +33,7 @@ const useAudio = (instrument: Instrument): Result => {
       const sound = new Howl({
         src: [audio],
       });
+
       if (instrument.rate) {
         sound.rate(instrument.rate);
       }

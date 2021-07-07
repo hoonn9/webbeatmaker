@@ -18,6 +18,10 @@ const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad, onMoveBeatPad }) => 
   const { splitBeat } = useWorkstation();
   const { padInputMethod, setPadInputMethod } = useTrack();
 
+  const onMouseDown = useCallback(() => {
+    onClickBeatPad(index);
+  }, [padInputMethod, onMoveBeatPad]);
+
   const splitClassName = useMemo(() => {
     if (index % splitBeat === 0) {
       return 'border-l-2';
@@ -28,35 +32,11 @@ const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad, onMoveBeatPad }) => 
     if (padInputMethod) {
       onMoveBeatPad(index, padInputMethod);
     }
-  }, [padInputMethod]);
+  }, [padInputMethod, onMoveBeatPad]);
 
   const onMouseUp = useCallback(() => {
     setPadInputMethod(null);
   }, []);
-
-  const render = useMemo(() => {
-    if (beat.trigger) {
-      return (
-        <button
-          draggable={false}
-          className={`bg-blue-300 w-full h-full ${splitClassName}`}
-          onPointerDown={onClickBeatPad.bind(this, index)}
-          onPointerUp={onMouseUp}
-        >
-          <img className="w-full h-full object-fill" src={PadOn} draggable={false} />
-        </button>
-      );
-    } else {
-      return (
-        <button
-          draggable={false}
-          className={`bg-white border w-full h-full ${splitClassName}`}
-          onPointerDown={onClickBeatPad.bind(this, index)}
-          onPointerUp={onMouseUp}
-        />
-      );
-    }
-  }, [beat.trigger, index, splitBeat]);
 
   return (
     <div
@@ -66,9 +46,25 @@ const BeatPad: VFC<Props> = ({ index, beat, onClickBeatPad, onMoveBeatPad }) => 
       className="flex-shrink-0"
       style={{ width: 24, height: 32 }}
     >
-      {render}
+      {beat.trigger ? (
+        <button
+          draggable={false}
+          className={`bg-blue-300 w-full h-full ${splitClassName}`}
+          onMouseDown={onMouseDown}
+          onPointerUp={onMouseUp}
+        >
+          <img className="w-full h-full object-fill" src={PadOn} draggable={false} />
+        </button>
+      ) : (
+        <button
+          draggable={false}
+          className={`bg-white border w-full h-full ${splitClassName}`}
+          onMouseDown={onMouseDown}
+          onPointerUp={onMouseUp}
+        />
+      )}
     </div>
   );
 };
 
-export default BeatPad;
+export default React.memo(BeatPad);

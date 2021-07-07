@@ -1,5 +1,29 @@
 import { AudioSourceMap } from '@typings/common.types';
 
+export const DRUM_DRAKE: AudioSourceMap = {
+  bass: {
+    src: 'drums/drake/bass',
+  },
+  kick: {
+    src: 'drums/drake/kick',
+  },
+  clap: {
+    src: 'drums/drake/clap',
+  },
+  closeHH: {
+    src: 'drums/drake/closeHH',
+  },
+  openHH: {
+    src: 'drums/drake/openHH',
+  },
+  HH_Fill: {
+    src: 'drums/drake/HH_Fill',
+  },
+  ORCH_HIT: {
+    src: 'drums/drake/ORCH_HIT',
+  },
+};
+
 export const DRUM_808: AudioSourceMap = {
   bass: {
     src: 'drums/808/bass',

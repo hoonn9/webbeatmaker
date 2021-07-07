@@ -1,6 +1,6 @@
 import useInterval from '@hooks/useInterval';
 import { getMsByBpm } from '@utils/time';
-import React, { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 interface ContextProps {
   ms: number;
@@ -50,6 +50,7 @@ export const WorkstationContext: FC<Props> = ({ children }) => {
     () => {
       if (beatPosition === barLength * splitBeat - 1) {
         setBeatPosition(0);
+        setMs(0);
       } else {
         setBeatPosition((prev) => prev + 1);
       }
@@ -86,6 +87,28 @@ export const WorkstationContext: FC<Props> = ({ children }) => {
       return;
     }
     setSplitBeat(value);
+  }, []);
+
+  const playingRef = useRef(playing);
+
+  useEffect(() => {
+    playingRef.current = playing;
+  }, [playing]);
+
+  const onPressSpacebar = useCallback((event: KeyboardEvent) => {
+    const { code } = event;
+    if (code === 'Space') {
+      if (playingRef.current) {
+        pause();
+      } else {
+        play();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('keypress', onPressSpacebar);
+    return () => window.removeEventListener('keypress', onPressSpacebar);
   }, []);
 
   return (
